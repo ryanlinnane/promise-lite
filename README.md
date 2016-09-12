@@ -41,10 +41,10 @@ Supports .then chaining and async resolution/rejection.
 
 ### Example
 
-```
+```javascript
   import Promise from 'Promise'
 
-  Promise = new Promise((resolve, reject) => {
+  const p = new Promise((resolve, reject) => {
       setTimeout(() => resolve(5), 1000)
   })
   .then((fulfilled) => {
@@ -58,7 +58,4 @@ Supports .then chaining and async resolution/rejection.
   }, (rejected) => {
     console.log('rejected 2 ', rejected)
   })
-
-
-
 ```
