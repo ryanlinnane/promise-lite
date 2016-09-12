@@ -10,6 +10,10 @@
     "build": "babel src --out-dir lib",
     "prepublish": "npm run build"
   },
+  "repository": {
+    "type":"git",
+    "url":"https://github.com/ryanlinnane/Promise-lite"
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",
