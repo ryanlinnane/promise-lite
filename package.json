@@ -1,12 +1,14 @@
 {
   "name": "Promise",
-  "version": "1.0.0",
+  "version": "1.0.2",
   "description": "",
-  "main": "index.js",
+  "main": "lib/Promise.js",
   "scripts": {
     "test": "babel-node src/test/main.js",
     "dev": "nodemon src/test/main.js --exec babel-node",
-    "start": "babel-node src/Promise.js"
+    "start": "babel-node src/Promise.js",
+    "build": "babel src --out-dir lib",
+    "prepublish": "npm run build"
   },
   "keywords": [],
   "author": "",
