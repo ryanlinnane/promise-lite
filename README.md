@@ -38,3 +38,27 @@ Supports .then chaining and async resolution/rejection.
 ```
   $ npm run build
 ```
+
+### Example
+
+```
+  import Promise from 'Promise'
+
+  Promise = new Promise((resolve, reject) => {
+      setTimeout(() => resolve(5), 1000)
+  })
+  .then((fulfilled) => {
+    console.log('fulfilled', fulfilled)
+    return "success"
+  }, (rejected) => {
+    console.log('rejected ', rejected)
+  })
+  .then((fulfilled) => {
+    console.log('fulfilled 2 ', fulfilled)
+  }, (rejected) => {
+    console.log('rejected 2 ', rejected)
+  })
+
+
+
+```
