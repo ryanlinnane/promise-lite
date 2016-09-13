@@ -26,6 +26,18 @@ export default class Promise {
     this.rejectedTo = err
     this._next(null, err)
   }
+
+
+  _unwrap(promise, resolve) {
+    if(promise instanceof Promise) {
+      promise.then(result => {
+        this._unwrap(result, resolve)
+      })
+      return
+    }
+    resolve(promise)
+  }
+
   //open up all callbacks that were waiting on this given promise. (.thened on it)
   _next(resolution = null, rejection = null) {
     //return a new promise...
@@ -35,18 +47,8 @@ export default class Promise {
         const { didResolve, didReject, reject, resolve } = deferred
         switch(this.state) {
           case state.resolved:
-            let promise = resolve(didResolve(resolution)) //TODO: unwrap potential promise promise being returned
-            //may return a new promise explicitly per the user. or we wrap it in a promise
-            //just call off the .then
-            //once this one completes. it calls off it's childen
-            //create new promise in then.
-            //the return of this inner promise
-            //TODO: save our current resolution
-            if(promise) {
-              // if(!(promise instanceof Promise)) {
-              //   promise = new Promise((resolve) => resolve(promise))
-              // }
-            }
+            let promise = didResolve(resolution) //TODO: unwrap potential promise promise being returned from cb.
+            this._unwrap(promise, resolve)
             break;
           case state.rejected:
             reject(didReject(rejection))
@@ -59,18 +61,19 @@ export default class Promise {
     //only go forward with .then once we've finished up with the previous promise.
     //the callback inside of .thens can also be async.
     //if the returned callback has a promise.. we continue down the chain. and provide it as the resolution or rejection to the next then statement.
-    console.log('about to handle ', didResolve, this.state, this.resolvedTo)
+    // console.log('about to handle ', didResolve, this.state, this.resolvedTo)
     return new Promise((resolve, reject) => {
       if(this.state == state.resolved) {
-        resolve(didResolve(this.resolvedTo)) //TODO: unwrap didResolve if it returns a promise, before resolving it.
+        let promise = didResolve(this.resolvedTo)
+        this._unwrap(promise, resolve)
       }
       else if(this.state == state.rejected) {
-        console.log('rejecting')
+        // console.log('rejecting')
         reject(didReject(this.rejectedTo)) //TODO: need?
       }
       else {
         //defer this wrapped promise.
-        console.log('deferring ', didResolve)
+        // console.log('deferring ', didResolve)
         const defer = {
           didResolve,
           didReject,
@@ -79,7 +82,6 @@ export default class Promise {
         }
         this.callbacks = [ ...this.callbacks, defer ]
       }
-
     })
   }
 }

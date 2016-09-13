@@ -127,17 +127,14 @@ const P = new Promise((resolve, reject) => {
     resolve(4)
   })
 }).then((promise) => {
-  return promise.then(r => new Promise((resolve, reject) => {
+  console.log('promise ', promise)
+  return new Promise((resolve, reject) => {
     // resolve('hi')
     setTimeout(() => {
       console.log('resolving hi')
       resolve('hi')
     }, 1000)
-  }))
+  })
 }).then(d => {
   console.log('d ',d)
-  d.then(r => {
-    console.log('r ', r)
-    r.then(console.log)
-  })
 })
