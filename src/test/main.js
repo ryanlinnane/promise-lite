@@ -24,38 +24,120 @@
 //
 //
 
+//
+// import Promise from '../Promise';
+// const P = new Promise((res, rej) => {
+//     res(123);
+// });
+// let testsPassed = 0;
+// const P2 = P.then((value) => {
+//     console.log('P resolved.  Value is ' + value);
+//     testsPassed += (value === 123);
+// });
+// const P3 = P.then((value) => {
+//     console.log('P resolved.  Value is ' + value);
+//     testsPassed += (value === 123);
+//     return 5
+// }).then((value2) => {
+//   console.log('running after p3', value2)
+//   return 7
+// }).then((value) => {
+//   return new Promise((resolve, reject) => {
+//     setTimeout(() => {
+//       console.log('fin executing async')
+//       resolve(1000)
+//     }, 1000)
+//     console.log('start executing async')
+//   })
+// });
+//
+// P3.then((last) => {
+//   console.log('last ', last)
+// })
+// setTimeout(() => {
+//     const total = 2;
+//     console.log(`${testsPassed} / ${total} tests passed.`);
+// }, 4000);
 
-import Promise from '../Promise';
 
-const P = new Promise((res, rej) => {
-    res(123);
-});
-let testsPassed = 0;
-const P2 = P.then((value) => {
-    console.log('P resolved.  Value is ' + value);
-    testsPassed += (value === 123);
-});
-const P3 = P.then((value) => {
-    console.log('P resolved.  Value is ' + value);
-    testsPassed += (value === 123);
-    return 5
-}).then((value2) => {
-  console.log('running after p3', value2)
-  return 7
-}).then((value) => {
+
+
+//TODO: test 3
+// import Promise from '../Promise'
+// const P = new Promise((resolve, reject) => {
+//   setTimeout(() => {
+//     resolve(1)
+//   }, 2000)
+// }).then(result => {  //this should append to the new promise.
+//   return new Promise((resolve, reject) => {
+//     setTimeout(() => {
+//       resolve(2)
+//     }, 2000)
+//   }).then(result => {
+//     return new Promise((resolve, reject) => {
+//       setTimeout(() => {
+//         resolve(3)
+//       }, 2000)
+//     })
+//   })
+//   //note that the final .then is called once the prior promise chain actually completes.
+// }).then(result => {
+//   console.log('final then ', result)
+//   //if we return a new promise here.... p will get set
+//   return new Promise((resolve, reject) => {
+//     resolve(4)
+//   })
+// })
+//
+// //all the .thens on the same promise reference do get calls in order on it's resolution.
+// //so we do need an array of then callbacks.
+// P.then(result => {
+//   console.log('result ', result)
+//   return new Promise((resolve, reject) => {
+//     resolve(5)
+//   })
+// }).then(console.log)
+// P.then(result => {
+//   console.log('result ', result)
+// })
+
+
+
+
+
+
+import Promise from '../Promise'
+const P = new Promise((resolve, reject) => {
+  setTimeout(() => {
+    resolve(1)
+  }, 2000)
+}).then(result => {  //this should append to the new promise.
+    console.log('result 1 ', result)
+    return result + 1
+  // return new Promise((resolve, reject) => {
+  //   setTimeout(() => {
+  //     resolve(2)
+  //   }, 2000)
+  // })
+  //note that the final .then is called once the prior promise chain actually completes.
+}).then(result => {
+  console.log('final then ', result)
+  //if we return a new promise here.... p will get set
   return new Promise((resolve, reject) => {
-    setTimeout(() => {
-      console.log('fin executing async')
-      resolve(1000)
-    }, 1000)
-    console.log('start executing async')
+    resolve(4)
   })
-});
-
-P3.then((last) => {
-  console.log('last ', last)
+}).then((promise) => {
+  return promise.then(r => new Promise((resolve, reject) => {
+    // resolve('hi')
+    setTimeout(() => {
+      console.log('resolving hi')
+      resolve('hi')
+    }, 1000)
+  }))
+}).then(d => {
+  console.log('d ',d)
+  d.then(r => {
+    console.log('r ', r)
+    r.then(console.log)
+  })
 })
-setTimeout(() => {
-    const total = 2;
-    console.log(`${testsPassed} / ${total} tests passed.`);
-}, 4000);
