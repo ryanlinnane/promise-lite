@@ -26,8 +26,6 @@ export default class Promise {
     this.rejectedTo = err
     this._next(null, err)
   }
-
-
   _unwrap(promise, resolve) {
     if(promise instanceof Promise) {
       promise.then(result => {
@@ -37,7 +35,6 @@ export default class Promise {
     }
     resolve(promise)
   }
-
   //open up all callbacks that were waiting on this given promise. (.thened on it)
   _next(resolution = null, rejection = null) {
     //return a new promise...
@@ -58,6 +55,30 @@ export default class Promise {
     }
   }
   then(didResolve, didReject) {
+
+    //if no resolution callback is provided, just return a new promise with the result state.
+    if(!didResolve) {
+      return new Promise((resolve, reject) => {
+
+        if(this.state == state.resolved) {
+          resolve(this.resolvedTo)
+        }
+        else if(this.state == state.rejected) {
+          reject(this.rejectedTo)
+        }
+        else {
+          const defer = {
+            didResolve: (result) => result,
+            didReject: (result) => result,
+            resolve,
+            reject
+          }
+          this.callbacks = [ ...this.callbacks, defer ]
+        }
+      })
+    }
+
+
     //only go forward with .then once we've finished up with the previous promise.
     //the callback inside of .thens can also be async.
     //if the returned callback has a promise.. we continue down the chain. and provide it as the resolution or rejection to the next then statement.

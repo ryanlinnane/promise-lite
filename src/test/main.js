@@ -134,6 +134,8 @@ const P = new Promise((resolve, reject) => {
       console.log('resolving hi')
       resolve('hi')
     }, 1000)
+  }).then().then(t => {
+    return t
   })
 }).then(d => {
   console.log('d ',d)
