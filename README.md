@@ -24,6 +24,7 @@ Open to suggestions for improvements.
 ## About
 ### Supports 
 .then chaining and async resolution/rejection.
+
 returning of new promise chains in a .then, and forceful unwrapping to keep the chaining flat.
 
 ### TODO:
